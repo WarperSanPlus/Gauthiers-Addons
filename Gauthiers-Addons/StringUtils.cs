@@ -68,7 +68,6 @@
             return true;
         }
 
-#nullable enable
         /// <summary>
         /// Finds the similitaries and differences between <paramref name="a"/> and <paramref name="b"/>
         /// </summary>
@@ -97,9 +96,9 @@
                 OnDifferenceFound?.Invoke(longestString[i], null);
             }
         }
-#nullable restore
     }
 
+    // --- Taken from System.Drawing ---
     public enum StringAlignment
     {
         //

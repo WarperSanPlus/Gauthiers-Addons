@@ -178,12 +178,12 @@ namespace ConsoleUtils
                         }
                     }
 
-                    _frameColor = value;
+                    _textColor = value;
                 }
             }
 
-            private string[] DisplayedLines = new string[] { };
-            private string? displayedText;
+            private string[] DisplayedLines = Array.Empty<string>();
+            private string? displayedText; // Only useful when adding text
 
             /// <summary>
             /// Shows <paramref name="text"/> onto the window.
@@ -287,6 +287,7 @@ namespace ConsoleUtils
                 }
             }
 
+            // Distance between the position of the window and the position of the text
             private Point Offset = new(2, 1);
 
             /// <summary>
@@ -295,11 +296,11 @@ namespace ConsoleUtils
             /// <param name="refresh"></param>
             public void ClearText(bool refresh) => ShowText("", refresh);
 
-            public void AddText(object text, bool addToStart, bool refresh)
-            {
-                string textString = text.ToString();
-                ShowText(addToStart ? textString + displayedText : displayedText + textString, refresh);
-            }
+            //public void AddText(object text, bool addToStart, bool refresh)
+            //{
+            //    string textString = text.ToString();
+            //    ShowText(addToStart ? textString + displayedText : displayedText + textString, refresh);
+            //}
 
             #endregion Text
 
@@ -434,7 +435,7 @@ namespace ConsoleUtils
             /// <summary>
             /// Name of this window
             /// </summary>
-            private string _name { get; set; }
+            private string _name;
 
             public string Name
             {
@@ -469,7 +470,7 @@ namespace ConsoleUtils
             #endregion Name
 
             #region Frame
-
+            // Characters used to display the frame of the window
             private const char SideBar = '█';
             private const char TopBar = '▀';
             private const char BottomBar = '▄';
@@ -478,6 +479,7 @@ namespace ConsoleUtils
             private const char TopRightCorner = '█';
             private const char BottomLeftCorner = '█';
             private const char BottomRightCorner = '█';
+            // ---
 
             /// <summary>
             /// Color of the frame of this window
@@ -490,32 +492,32 @@ namespace ConsoleUtils
                 get => _frameColor;
                 set
                 {
-                    if (Width <= 0 || Height <= 0)
-                        return;
-
-                    Point nameEndPoint;
-
-                    if (!string.IsNullOrEmpty(Name))
+                    if (Width > 0 && Height > 0)
                     {
-                        FormattedName ??= FormatName(Name, Width);
+                        Point nameEndPoint;
 
-                        SetPixel(1, 0, TopBar, value);
-                        nameEndPoint = new Point(FormattedName.Length + 2, 0);
+                        if (!string.IsNullOrEmpty(Name))
+                        {
+                            FormattedName ??= FormatName(Name, Width);
+
+                            SetPixel(1, 0, TopBar, value);
+                            nameEndPoint = new Point(FormattedName.Length + 2, 0);
+                        }
+                        else
+                            nameEndPoint = new Point(1, 0);
+
+                        // Borders
+                        DrawLine(nameEndPoint, new Point(Width - 1, 0), this, TopBar, value); // Top
+                        DrawLine(new Point(Width - 1, 1), new Point(Width - 1, Height - 1), this, SideBar, value); // Right
+                        DrawLine(new Point(0, 1), new Point(0, Height - 1), this, SideBar, value); // Left
+                        DrawLine(new Point(1, Height - 1), new Point(Width - 1, Height - 1), this, BottomBar, value); // Bottom
+
+                        // Corners
+                        SetPixel(0, 0, TopLeftCorner, value);
+                        SetPixel(0, Height - 1, BottomLeftCorner, value);
+                        SetPixel(Width - 1, 0, TopRightCorner, value);
+                        SetPixel(Width - 1, Height - 1, BottomRightCorner, value);
                     }
-                    else
-                        nameEndPoint = new Point(1, 0);
-
-                    // Borders
-                    DrawLine(nameEndPoint, new Point(Width - 1, 0), this, TopBar, value); // Top
-                    DrawLine(new Point(Width - 1, 1), new Point(Width - 1, Height - 1), this, SideBar, value); // Right
-                    DrawLine(new Point(0, 1), new Point(0, Height - 1), this, SideBar, value); // Left
-                    DrawLine(new Point(1, Height - 1), new Point(Width - 1, Height - 1), this, BottomBar, value); // Bottom
-
-                    // Corners
-                    SetPixel(0, 0, TopLeftCorner, value);
-                    SetPixel(0, Height - 1, BottomLeftCorner, value);
-                    SetPixel(Width - 1, 0, TopRightCorner, value);
-                    SetPixel(Width - 1, Height - 1, BottomRightCorner, value);
 
                     _frameColor = value;
                 }

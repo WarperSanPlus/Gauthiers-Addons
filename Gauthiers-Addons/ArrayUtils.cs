@@ -18,9 +18,9 @@ namespace ArrayUtils
                 return false;
 
             // Group by items to KeyValuePair(item, # of this items)
-#pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+#pragma warning disable CS8714
             var counts = array1.GroupBy(v => v).ToDictionary(g => g.Key, g => g.Count());
-#pragma warning restore CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+#pragma warning restore CS8714
 
             foreach (var n in array2)
             {
@@ -34,12 +34,12 @@ namespace ArrayUtils
             return counts.Values.All(c => c == 0);
         }
 
-        /// <returns> Is <paramref name="array1"/> sorted? </returns>
-        public static bool IsSorted<T>(this IList<T> array1) where T : IComparable<T>
+        /// <returns> Is <paramref name="array"/> sorted? </returns>
+        public static bool IsSorted<T>(this IList<T> array) where T : IComparable<T>
         {
-            for (int i = 1; i < array1.Count; ++i)
+            for (int i = 1; i < array.Count; ++i)
             {
-                if (array1[i - 1].CompareTo(array1[i]) > 0)
+                if (array[i - 1].CompareTo(array[i]) > 0)
                     return false;
             }
             return true;
@@ -207,7 +207,7 @@ namespace ArrayUtils
                 content += colorSequence;
 
                 if (linePerItem)
-                    content += "\n "; // Tabulation
+                    content += "\n "; // Tabulation if the array is displayed on multiple lines
 
                 content += item?.ToString() ?? string.Empty;
 
